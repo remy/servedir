@@ -8,7 +8,7 @@ Useful for when you're developing scripts that need a "normal" web environment, 
 
 Either through forking or:
 
-`npm install servedir`
+  npm install servedir
 
 And `servedir` will be installed in to your bin path.
 
@@ -16,7 +16,7 @@ And `servedir` will be installed in to your bin path.
 
 `servedir` can be run without any arguments and it will serve the current working directory on port 8000.  If you've not used npm to install `servedir`, simply run it with node:
 
-`node servedir`
+  node servedir
 
 ## Arguments
 
@@ -25,5 +25,5 @@ And `servedir` will be installed in to your bin path.
 
 Neither arguments are required, but if both are given must be path then port:
 
-`servedir ~/Documents/example 8001`
+  servedir ~/Documents/example 8001
 
