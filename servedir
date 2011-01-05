@@ -11,7 +11,7 @@ var http = require('http'),
     mimeTypes = {
       html: 'text/html',
       js: 'text/javascript',
-      json: 'text/javascript',
+      json: 'application/json',
       css: 'text/css',
       txt: 'text/plain',
       jpg: 'image/jpeg',
