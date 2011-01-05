@@ -9,6 +9,6 @@
     "repository": { "type" : "git", "url" : "http://github.com/remy/servedir.git" },    
     "description": "Creates a simple web server for a directory",
     "keywords": ["development", "web", "server", "terminal"],
-    "version": "0.1",
+    "version": "0.0.1",
     "main": "./servedir"
 }
