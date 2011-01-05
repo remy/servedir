@@ -4,9 +4,17 @@ Super simple web server for offline development and testing. Run `servedir` from
 
 Useful for when you're developing scripts that need a "normal" web environment, i.e. can't run from the `file://` protocol. 
 
+# Installing
+
+Either through forking or:
+
+`npm install servedir`
+
+And `servedir` will be installed in to your bin path.
+
 # Usage
 
-`servedir` can be run without any arguments and it will serve the current working directory on port 8000.  To run, either install as an npm module or fork the project and run using:
+`servedir` can be run without any arguments and it will serve the current working directory on port 8000.  If you've not used npm to install `servedir`, simply run it with node:
 
 `node servedir`
 
