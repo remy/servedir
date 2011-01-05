@@ -1,0 +1,14 @@
+{
+    "name": "servedir",
+    "homepage": "http://github.com/remy/servedir",
+    "author": {
+      "name": "Remy Sharp",
+      "url": "http://github.com/remy"
+    },
+    "bin": { "servedir" : "./servedir" },
+    "repository": { "type" : "git", "url" : "http://github.com/remy/servedir.git" },    
+    "description": "Creates a simple web server for a directory",
+    "keywords": ["development", "web", "server", "terminal"],
+    "version": "0.1",
+    "main": "./servedir"
+}
