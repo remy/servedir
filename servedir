@@ -9,8 +9,8 @@
 */
 
 // Convenience aliases.
-var http = require('http'), path = require('path'), fs = require('fs'),
-url = require('url'),
+var createServer = require('http').createServer, parse = require('url').parse,
+path = require('path'), fs = require('fs'),
 
 // Common MIME types.
 mimeTypes = {
@@ -74,11 +74,11 @@ if (!root || (root = Math.ceil(root)) > -1) {
 }
 
 // Create a new simple HTTP server.
-http.createServer(function(req, res) {
+createServer(function(req, res) {
   // Resolve the path to the requested file or folder.
-  var pathname = url.parse(req.url).pathname, file = path.join(root, pathname);
+  var pathname = parse(req.url).pathname, file = path.join(root, pathname);
   path.exists(file, function(exists) {
-    var stat;
+    var stat, length, files;
     if (exists) {
       // Serve files and directories.
       stat = fs.statSync(file);
@@ -101,17 +101,17 @@ http.createServer(function(req, res) {
         });
       } else {
         // Serve directories.
-        if (pathname.slice(-1) !== '/') {
+        if (pathname.indexOf('/', (length = pathname.length - 1)) !== length) {
           // Automatically append a trailing slash for directories.
           pathname += '/';
         }
         res.writeHead(200, {'Content-type': 'text/html'});
-        res.write('<ul>\n');
+        // Create a basic directory listing.
+        files = [];
         fs.readdirSync(file).forEach(function(name) {
-          res.write('<li><a href="' + pathname + name + '">' + name +
-            '</a></li>\n');
+          files.push('<a href="' + pathname + name + '">' + name + '</a>');
         });
-        res.write('</ul>\n');
+        res.write('<ul><li>' + files.join('</li><li>') + '</li></ul>');
         res.end();
       }
     } else {
