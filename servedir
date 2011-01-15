@@ -54,7 +54,7 @@ http.createServer(function(req, res) {
         fs.readFile(file, 'binary', function(err, file) {
           if (err) {
             // Internal server error; avoid throwing an exception.
-            res.sendHeader(500, {'Content-type': 'text/plain'});
+            res.writeHeader(500, {'Content-type': 'text/plain'});
             res.write(err + '\n');
           } else {
             // Set the correct MIME type using the extension.
