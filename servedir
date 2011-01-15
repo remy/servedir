@@ -79,45 +79,57 @@ createServer(function(req, res) {
   // Resolve the path to the requested file or folder.
   var pathname = parse(req.url).pathname, file = path.join(root, pathname);
   path.exists(file, function(exists) {
-    var stat, length, files;
-    if (exists) {
-      // Serve files and directories.
-      stat = fs.statSync(file);
-      if (stat.isFile()) {
-        // Read and serve files.
-        fs.readFile(file, 'binary', function(err, file) {
-          if (err) {
-            // Internal server error; avoid throwing an exception.
-            res.writeHeader(500, {'Content-type': 'text/plain'});
-            res.write('An internal server error occurred: ' + error);
-          } else {
-            // Set the correct MIME type using the extension.
-            res.writeHead(200, {'Content-Type': mimeTypes[file.slice(
-              // Unrecognized extension; use the default MIME type.
-              file.lastIndexOf('.') + 1)] || defaultMime});
-            res.write(file, 'binary');
-          }
-          // Close the connection.
-          res.end();
-        });
-      } else {
-        // Serve directories.
-        if (pathname.indexOf('/', (length = pathname.length - 1)) !== length) {
-          // Automatically append a trailing slash for directories.
-          pathname += '/';
-        }
-        res.writeHead(200, {'Content-type': 'text/html'});
-        // Create a basic directory listing.
-        files = [];
-        fs.readdirSync(file).forEach(function(name) {
-          files.push('<a href="' + pathname + name + '">' + name + '</a>');
-        });
-        res.write('<ul><li>' + files.join('</li><li>') + '</li></ul>');
-        res.end();
-      }
-    } else {
+    if (!exists) {
       res.writeHead(200, {'Content-type': 'text/plain'});
       res.end('The file ' + file + ' was not found.');
+    } else {
+      // Serve files and directories.
+      fs.stat(file, function(err, stats) {
+        var length;
+        if (err) {
+          // Internal server error; avoid throwing an exception.
+          res.writeHeader(500, {'Content-type': 'text/plain'});
+          res.end('An internal server error occurred: ' + err);
+        } else if (stats.isFile()) {
+          // Read and serve files.
+          fs.readFile(file, 'binary', function(err, file) {
+            if (err) {
+              // Internal server error; avoid throwing an exception.
+              res.writeHeader(500, {'Content-type': 'text/plain'});
+              res.write('An internal server error occurred: ' + err);
+            } else {
+              // Set the correct MIME type using the extension.
+              res.writeHead(200, {'Content-Type': mimeTypes[file.slice(
+                // Unrecognized extension; use the default MIME type.
+                file.lastIndexOf('.') + 1)] || defaultMime});
+              res.write(file, 'binary');
+            }
+            // Close the connection.
+            res.end();
+          });
+        } else {
+          // Serve directories.
+          length = pathname.length - 1;
+          if (pathname.indexOf('/', length) !== length) {
+            // Automatically append a trailing slash for directories.
+            pathname += '/';
+          }
+          fs.readdir(file, function(err, files) {
+            if (err) {
+              res.writeHeader(500, {'Content-type': 'text/plain'});
+              res.write('An internal server error occurred: ' + err);
+            } else {
+              // Create a basic directory listing.
+              files = files.map(function(name) {
+                return '<a href="' + pathname + name + '">' + name + '</a>';
+              });
+              res.writeHead(200, {'Content-type': 'text/html'});
+              res.write('<ul><li>' + files.join('</li><li>') + '</li></ul>');
+            }
+            res.end();
+          });
+        }
+      });
     }
   });
 }).listen(port);
