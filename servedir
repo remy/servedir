@@ -1,74 +1,88 @@
 #!/usr/local/bin/node
 
-var http = require('http'),
-    path = require('path'),
-    fs = require('fs'),
-    url = require('url'),
-    root = '',
-    port = 0,
-    // massively simplified - can't be arsed to load in all the mime types properly
-    defaultMime = 'text/plain',
-    mimeTypes = {
-      html: 'text/html',
-      js: 'text/javascript',
-      json: 'application/json',
-      css: 'text/css',
-      txt: 'text/plain',
-      jpg: 'image/jpeg',
-      jpeg: 'image/jpeg',
-      gif: 'image/gif',
-      png: 'image/png'
-    };
+/*!
+ * servedir HTTP Server
+ * http://github.com/rem/servedir
+ *
+ * Copyright 2011, Remy Sharp
+ * http://remysharp.com
+*/
 
-// defaults
-root = process.argv[2];
-port = process.argv[3];
+// Convenience aliases.
+var http = require('http'), path = require('path'), fs = require('fs'),
+url = require('url'),
+
+// Common MIME types.
+mimeTypes = {
+  html: 'text/html',
+  js: 'text/javascript',
+  json: 'application/json',
+  css: 'text/css',
+  txt: 'text/plain',
+  jpg: 'image/jpeg',
+  jpeg: 'image/jpeg',
+  gif: 'image/gif',
+  png: 'image/png'
+},
+
+// Configure the root directory, port, and default MIME type.
+root = process.argv[2], port = process.argv[3], defaultMime = 'text/plain';
+
+// Use port 8000 if the port was omitted.
 if (!port) {
   port = 8000;
 }
 
-if (!root || (/^\d+$/).test(root)) {
+// Use the current directory if the root directory was omitted.
+if (!root || (root = Math.ceil(root)) > -1) {
+  // Port number specified.
   port = root || port;
   root = process.cwd();
 }
 
-http.createServer(function (req, res) {
-  var pathname = url.parse(req.url).pathname,
-      file = path.join(root, pathname);
-      
-  path.exists(file, function (exists) {
+// Create a new simple HTTP server.
+http.createServer(function(req, res) {
+  // Resolve the path to the requested file or folder.
+  var pathname = url.parse(req.url).pathname, file = path.join(root, pathname);
+  path.exists(file, function(exists) {
     var stat;
-        
     if (exists) {
+      // Serve files and directories.
       stat = fs.statSync(file);
       if (stat.isFile()) {
-        // serve up
-        var mime = mimeTypes[file.substr(file.lastIndexOf('.')+1)] || defaultMime;
-        
-        fs.readFile(file, "binary", function(err, file) {
-          if (err) {  
-            response.sendHeader(500, {"Content-Type": "text/plain"});  
-            response.write(err + "\n");  
+        // Read and serve files.
+        fs.readFile(file, 'binary', function(err, file) {
+          if (err) {
+            // Internal server error; avoid throwing an exception.
+            res.sendHeader(500, {'Content-type': 'text/plain'});
+            res.write(err + '\n');
           } else {
-            res.writeHead(200, {'Content-type': mime });
-            res.write(file, "binary");  
+            // Set the correct MIME type using the extension.
+            res.writeHead(200, {'Content-Type': mimeTypes[file.slice(
+              // Unrecognized extension; use the default MIME type.
+              file.lastIndexOf('.') + 1)] || defaultMime});
+            res.write(file, 'binary');
           }
-
-          res.end();  
+          // Close the connection.
+          res.end();
         });
       } else {
-        if (pathname.substr(-1) !== '/') pathname += '/';
-        
-        res.writeHead(200, {'Content-type': 'text/html' });
+        // Serve directories.
+        if (pathname.slice(-1) !== '/') {
+          // Automatically append a trailing slash for directories.
+          pathname += '/';
+        }
+        res.writeHead(200, {'Content-type': 'text/html'});
         res.write('<ul>\n');
-        fs.readdirSync(file).forEach(function (name) {
-          res.write('<li><a href="' + pathname + name + '">' + name + '</a></li>\n');
+        fs.readdirSync(file).forEach(function(name) {
+          res.write('<li><a href="' + pathname + name + '">' + name +
+            '</a></li>\n');
         });
         res.write('</ul>\n');
         res.end();
       }
     } else {
-      res.writeHead(404, {'Content-type': 'text/plain' });
+      res.writeHead(200, {'Content-type': 'text/plain'});
       res.end('File not found');
     }
   });
