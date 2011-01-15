@@ -121,7 +121,9 @@ createServer(function(req, res) {
             } else {
               // Create a basic directory listing.
               files = files.map(function(name) {
-                return '<a href="' + pathname + name + '">' + name + '</a>';
+                // URL-encode the path to each file or directory.
+                return '<a href="' + encodeURIComponent(pathname + name) +
+                  '">' + name + '</a>';
               });
               res.writeHead(200, {'Content-type': 'text/html'});
               res.write('<ul><li>' + files.join('</li><li>') + '</li></ul>');
