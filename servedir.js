@@ -1,5 +1,3 @@
-#!/usr/local/bin/node
-
 /*!
  * servedir HTTP Server
  * http://github.com/rem/servedir
