@@ -1,29 +1,29 @@
-# Introduction
+servedir
+========
 
-Super simple web server for offline development and testing. Run `servedir` from a directory and it will run a simple web server serving up all files from that location.
+`servedir` is a simple [Node](http://nodejs.org) web server for offline development and testing: running `servedir` from a directory will create a quick local web server. `servedir` is useful for developing scripts that require a standard web environment and can't use the `file://` protocol.
 
-Useful for when you're developing scripts that need a "normal" web environment, i.e. can't run from the `file://` protocol. 
+## Installation
 
-# Installing
+Check out a working copy of the source code with [Git](http://git-scm.com), or install `servedir` via [npm](http://npmjs.org). The latter will also install `servedir` into the system's `bin` path.
 
-Either through forking or:
+    $ git clone git://github.com/rem/servedir.git
+    $ npm install servedir
+    
+Alternatively, `servedir` can be run directly from the repository using Node:
 
-    npm install servedir
+    $ node servedir.js
+    
+## Usage
 
-And `servedir` will be installed in to your bin path.
+`servedir [path] [port]`
 
-# Usage
+* `path` - The location to serve files and directories from. Defaults to the current working directory.
+* `port` - The port number. Default to 8000.
 
-`servedir` can be run without any arguments and it will serve the current working directory on port 8000.  If you've not used npm to install `servedir`, simply run it with node:
+### Example
 
-    node servedir
-
-## Arguments
-
-* path - specify a location to serve from. Defaults to current working directory
-* port - the port to run the server. Defaults to port 8000
-
-Neither arguments are required, but if both are given must be path then port:
-
-    servedir ~/Documents/example 8001
-
+    $ servedir ~/Documents/example 8001
+    $ servedir ~/Documents/example
+    $ servedir 8001
+    $ servedir
