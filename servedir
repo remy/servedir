@@ -58,6 +58,9 @@ mimeTypes = {
   'zip': 'application/zip'
 },
 
+// Matches leading ellipses.
+ellipses = /^\.+/,
+
 // Configure the root directory, port, and default MIME type.
 root = process.argv[2], port = process.argv[3],
 defaultMime = 'application/octet-stream';
@@ -93,15 +96,18 @@ createServer(function(req, res) {
         } else if (stats.isFile()) {
           // Read and serve files.
           fs.readFile(file, 'binary', function(err, file) {
+            var index;
             if (err) {
               // Internal server error; avoid throwing an exception.
               res.writeHeader(500, {'Content-type': 'text/plain'});
               res.write('An internal server error occurred: ' + err);
             } else {
+              // Determine the file's extension.
+              index = file.replace(ellipses, '').lastIndexOf('.');
               // Set the correct MIME type using the extension.
-              res.writeHead(200, {'Content-Type': mimeTypes[file.slice(
+              res.writeHead(200, {'Content-Type': index > 0 && mimeTypes[
                 // Unrecognized extension; use the default MIME type.
-                file.lastIndexOf('.') + 1)] || defaultMime});
+                file.slice(index + 1)] || defaultMime});
               res.write(file, 'binary');
             }
             // Close the connection.
