@@ -59,7 +59,8 @@ mimeTypes = {
 },
 
 // Configure the root directory, port, and default MIME type.
-root = process.argv[2], port = process.argv[3], defaultMime = 'text/plain';
+root = process.argv[2], port = process.argv[3],
+defaultMime = 'application/octet-stream';
 
 // Use port 8000 if the port was omitted.
 if (!port) {
