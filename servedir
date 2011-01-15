@@ -88,7 +88,7 @@ createServer(function(req, res) {
           if (err) {
             // Internal server error; avoid throwing an exception.
             res.writeHeader(500, {'Content-type': 'text/plain'});
-            res.write(err + '\n');
+            res.write('An internal server error occurred: ' + error);
           } else {
             // Set the correct MIME type using the extension.
             res.writeHead(200, {'Content-Type': mimeTypes[file.slice(
@@ -116,9 +116,9 @@ createServer(function(req, res) {
       }
     } else {
       res.writeHead(200, {'Content-type': 'text/plain'});
-      res.end('File not found');
+      res.end('The file ' + file + ' was not found.');
     }
   });
 }).listen(port);
 
-console.log('Serving ' + root + ' on port ' + port);
+console.log('Serving %s on port %d...', root, port);
