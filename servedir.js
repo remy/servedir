@@ -11,53 +11,50 @@ var createServer = require('http').createServer, parse = require('url').parse,
 path = require('path'), fs = require('fs'),
 
 // Common MIME types.
-mimeTypes = {
-  'aif': 'audio/x-aiff',
-  'aiff': 'audio/x-aiff',
-  'atom': 'application/atom+xml',
-  'bmp': 'image/bmp',
-  'css': 'text/css',
-  'gif': 'image/gif',
-  'htm': 'text/html',
-  'html': 'text/html',
-  'ico': 'image/x-icon',
-  'ics': 'text/calendar',
-  'jpe': 'image/jpeg',
-  'jpeg': 'image/jpeg',
-  'jpg': 'image/jpeg',
-  'js': 'text/javascript',
-  'json': 'application/json',
-  'jsonp': 'text/javascript',
-  'mathml': 'application/mathml+xml',
-  'mid': 'audio/midi',
-  'midi': 'audio/midi',
-  'mov': 'video/quicktime',
-  'mp3': 'audio/mpeg',
-  'mpeg': 'video/mpeg',
-  'mpg': 'video/mpeg',
-  'ogg': 'application/ogg',
-  'pdf': 'application/pdf',
-  'png': 'image/png',
-  'rb': 'text/plain',
-  'rtf': 'application/rtf',
-  'sh': 'application/x-sh',
-  'svg': 'image/svg+xml',
-  'swf': 'application/x-shockwave-flash',
-  'tar': 'application/x-tar',
-  'tif': 'image/tiff',
-  'tiff': 'image/tiff',
-  'txt': 'text/plain',
-  'wav': 'audio/x-wav',
-  'xht': 'application/xhtml+xml',
-  'xhtml': 'application/xhtml+xml',
-  'xml': 'text/xml',
-  'xsl': 'application/xml',
-  'xslt': 'application/xslt+xml',
-  'zip': 'application/zip'
+mime = {
+  '.aif': 'audio/x-aiff',
+  '.aiff': 'audio/x-aiff',
+  '.atom': 'application/atom+xml',
+  '.bmp': 'image/bmp',
+  '.css': 'text/css',
+  '.gif': 'image/gif',
+  '.htm': 'text/html',
+  '.html': 'text/html',
+  '.ico': 'image/x-icon',
+  '.ics': 'text/calendar',
+  ',jpe': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.jpg': 'image/jpeg',
+  '.js': 'text/javascript',
+  '.json': 'application/json',
+  '.jsonp': 'text/javascript',
+  '.mathml': 'application/mathml+xml',
+  '.mid': 'audio/midi',
+  '.midi': 'audio/midi',
+  '.mov': 'video/quicktime',
+  '.mp3': 'audio/mpeg',
+  '.mpeg': 'video/mpeg',
+  '.mpg': 'video/mpeg',
+  '.ogg': 'application/ogg',
+  '.pdf': 'application/pdf',
+  '.png': 'image/png',
+  '.rb': 'text/plain',
+  '.rtf': 'application/rtf',
+  '.sh': 'application/x-sh',
+  '.svg': 'image/svg+xml',
+  '.swf': 'application/x-shockwave-flash',
+  '.tar': 'application/x-tar',
+  '.tif': 'image/tiff',
+  '.tiff': 'image/tiff',
+  '.txt': 'text/plain',
+  '.wav': 'audio/x-wav',
+  '.xht': 'application/xhtml+xml',
+  '.xhtml': 'application/xhtml+xml',
+  '.xml': 'text/xml',
+  '.xsl': 'application/xml',
+  '.xslt': 'application/xslt+xml',
+  '.zip': 'application/zip'
 },
-
-// Matches leading ellipses.
-ellipses = /^\.+/,
 
 // Configure the root directory, port, and default MIME type.
 root = process.argv[2], port = process.argv[3],
@@ -78,10 +75,11 @@ if (!root || (root = Math.ceil(root)) > -1) {
 // Create a new simple HTTP server.
 createServer(function(req, res) {
   // Resolve the path to the requested file or folder.
-  var pathname = parse(req.url).pathname, file = path.join(root, pathname);
+  var pathname = parse(decodeURIComponent(req.url)).pathname,
+  file = path.join(root, pathname);
   path.exists(file, function(exists) {
     if (!exists) {
-      res.writeHead(200, {'Content-type': 'text/plain'});
+      res.writeHead(200, {'Content-Type': 'text/plain'});
       res.end('The file ' + file + ' was not found.');
     } else {
       // Serve files and directories.
@@ -89,24 +87,21 @@ createServer(function(req, res) {
         var length;
         if (err) {
           // Internal server error; avoid throwing an exception.
-          res.writeHeader(500, {'Content-type': 'text/plain'});
+          res.writeHeader(500, {'Content-Type': 'text/plain'});
           res.end('An internal server error occurred: ' + err);
         } else if (stats.isFile()) {
           // Read and serve files.
-          fs.readFile(file, 'binary', function(err, file) {
-            var index;
+          fs.readFile(file, 'binary', function(err, contents) {
             if (err) {
               // Internal server error; avoid throwing an exception.
-              res.writeHeader(500, {'Content-type': 'text/plain'});
+              res.writeHeader(500, {'Content-Type': 'text/plain'});
               res.write('An internal server error occurred: ' + err);
             } else {
-              // Determine the file's extension.
-              index = file.replace(ellipses, '').lastIndexOf('.');
               // Set the correct MIME type using the extension.
-              res.writeHead(200, {'Content-Type': index > 0 && mimeTypes[
+              res.writeHead(200, {'Content-Type': mime[path.extname(file)] ||
                 // Unrecognized extension; use the default MIME type.
-                file.slice(index + 1)] || defaultMime});
-              res.write(file, 'binary');
+                defaultMime});
+              res.write(contents, 'binary');
             }
             // Close the connection.
             res.end();
@@ -120,16 +115,16 @@ createServer(function(req, res) {
           }
           fs.readdir(file, function(err, files) {
             if (err) {
-              res.writeHeader(500, {'Content-type': 'text/plain'});
+              res.writeHeader(500, {'Content-Type': 'text/plain'});
               res.write('An internal server error occurred: ' + err);
             } else {
               // Create a basic directory listing.
               files = files.map(function(name) {
                 // URL-encode the path to each file or directory.
-                return '<a href="' + encodeURI(pathname + name) +
+                return '<a href="' + encodeURIComponent(pathname + name) +
                   '">' + name + '</a>';
               });
-              res.writeHead(200, {'Content-type': 'text/html'});
+              res.writeHead(200, {'Content-Type': 'text/html'});
               res.write('<ul><li>' + files.join('</li><li>') + '</li></ul>');
             }
             res.end();
