@@ -140,8 +140,11 @@ createServer(function(req, res) {
                 return '<a href="' + encodeURI(pathname + name) +
                   '">' + name + '</a>';
               });
+              
+              if (pathname != '/') files.unshift('<a href="..">..</a>');
+              
               res.writeHead(200, {'Content-Type': 'text/html'});
-              res.write('<!DOCTYPE html><meta charset="utf-8"/><ul><li>' + files.join('<li>') + '</ul>');
+              res.write('<!DOCTYPE html><meta charset="utf-8"><title>[dir] ' + file + '</title><ul><li>' + files.join('<li>') + '</ul>');
             }
             res.end();
           });
