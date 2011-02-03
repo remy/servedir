@@ -7,8 +7,10 @@
 */
 
 // Convenience aliases.
-var createServer = require('http').createServer, parse = require('url').parse,
-path = require('path'), fs = require('fs'),
+var createServer = require('http').createServer,
+parse = require('url').parse,
+path = require('path'),
+fs = require('fs'),
 
 // Common MIME types.
 mime = {
@@ -58,7 +60,9 @@ mime = {
 },
 
 // Configure the root directory, port, and default MIME type.
-root = process.argv[2], port = process.argv[3],
+root = process.argv[2],
+port = process.argv[3],
+tmpRoot,
 defaultMime = 'application/octet-stream';
 
 // MIME type aliases for different extensions.
@@ -80,9 +84,9 @@ if (!port) {
 }
 
 // Use the current directory if the root directory was omitted.
-if (!root || (root = Math.ceil(root)) > -1) {
+if (!root || (tmpRoot = Math.ceil(root)) > -1) {
   // Port number specified.
-  port = root || port;
+  port = tmpRoot || port;
   root = process.cwd();
 }
 
