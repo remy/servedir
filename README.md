@@ -1,5 +1,4 @@
-servedir
-========
+# servedir
 
 `servedir` is a simple [Node](http://nodejs.org) web server for offline development and testing: running `servedir` from a directory will create a quick local web server. `servedir` is useful for developing scripts that require a standard web environment and can't use the `file://` protocol.
 
@@ -11,11 +10,11 @@ Check out a working copy of the source code with [Git](http://git-scm.com), or i
 
     $ git clone git://github.com/rem/servedir.git
     $ npm install servedir
-    
+
 Alternatively, `servedir` can be run directly from the repository using Node:
 
     $ node servedir.js
-    
+
 ## Usage
 
 `servedir [path] [port]`
