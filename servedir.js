@@ -137,11 +137,11 @@ createServer(function(req, res) {
               // Create a basic directory listing.
               files = files.map(function(name) {
                 // URL-encode the path to each file or directory.
-                return '<a href="' + encodeURIComponent(pathname + name) +
+                return '<a href="' + encodeURI(pathname + name) +
                   '">' + name + '</a>';
               });
               res.writeHead(200, {'Content-Type': 'text/html'});
-              res.write('<ul><li>' + files.join('</li><li>') + '</li></ul>');
+              res.write('<!DOCTYPE html><meta charset="utf-8"/><ul><li>' + files.join('<li>') + '</ul>');
             }
             res.end();
           });
