@@ -29,7 +29,6 @@ mime = {
   'jpeg': 'image/jpeg',
   'js': 'text/javascript',
   'json': 'application/json',
-  'manifest': 'text/cache-manifest',
   'mathml': 'application/mathml+xml',
   'midi': 'audio/midi',
   'mov': 'video/quicktime',
@@ -70,6 +69,7 @@ mime.aif = mime.aiff;
 mime.htm = mime.html;
 mime.jpe = mime.jpg = mime.jpeg;
 mime.jsonp = mime.js;
+mime.manifest = mime.appcache;
 mime.mid = mime.midi;
 mime.mpg = mime.mpeg;
 mime.ogv = mime.ogg;
