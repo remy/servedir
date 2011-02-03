@@ -25,10 +25,8 @@ mime = {
   'ico': 'image/vnd.microsoft.icon',
   'ics': 'text/calendar',
   'jpeg': 'image/jpeg',
-  'jpg': 'image/jpeg',
   'js': 'text/javascript',
   'json': 'application/json',
-  'jsonp': 'text/javascript',
   'manifest': 'text/cache-manifest',
   'mathml': 'application/mathml+xml',
   'midi': 'audio/midi',
@@ -37,14 +35,12 @@ mime = {
   'mp4': 'video/mp4',
   'mpeg': 'video/mpeg',
   'ogg': 'video/ogg',
-  'ogv': 'video/ogg',
   'otf': 'font/opentype',
   'pdf': 'application/pdf',
   'png': 'image/png',
   'rtf': 'application/rtf',
   'sh': 'application/x-sh',
   'svg': 'image/svg+xml',
-  'svgz': 'image/svg+xml',
   'swf': 'application/x-shockwave-flash',
   'tar': 'application/x-tar',
   'tiff': 'image/tiff',
@@ -70,11 +66,13 @@ mime.aif = mime.aiff;
 mime.htm = mime.html;
 mime.jpe = mime.jpg = mime.jpeg;
 mime.jsonp = mime.js;
-mime.xht = mime.xhtml;
-mime.tif = mime.tiff;
-mime.mpg = mime.mpeg;
 mime.mid = mime.midi;
+mime.mpg = mime.mpeg;
+mime.ogv = mime.ogg;
 mime.rb = mime.txt;
+mime.svgz = mime.svg;
+mime.tif = mime.tiff;
+mime.xht = mime.xhtml;
 
 // Use port 8000 if the port was omitted.
 if (!port) {
