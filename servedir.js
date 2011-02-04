@@ -89,11 +89,18 @@ mime.svgz = mime.svg;
 mime.tif = mime.tiff;
 mime.xht = mime.xhtml;
 
-// Use port 8000 if the port was omitted.
-if (!port) port = 8080;
+if (!port) {
+  // Port specified as the first argument; root directory omitted.
+  if ((port = Math.ceil(root)) > -1) {
+    root = null;
+  } else {
+    // Use port 8000 if the port was omitted.
+    port = 8000;
+  }
+}
 
 // Use the current directory if the root directory was omitted.
-if (!root || (port = Math.ceil(root)) > -1) root = process.cwd();
+if (!root) root = process.cwd();
 
 // Create a new simple HTTP server.
 createServer(function(req, res) {
