@@ -58,10 +58,21 @@ mime = {
   'zip': 'application/zip'
 },
 
+// Matches control characters in URLs.
+escapable = /[\x00-\x1f\x7f"'&?$\x20+,:;=@<>#%{}|\\\^~\[\]`]/g,
+
+// Escape sequences and entities for control characters.
+escapes = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  '\'': '&apos;'
+},
+
 // Configure the root directory, port, and default MIME type.
 root = process.argv[2],
 port = process.argv[3],
-tmpRoot,
 defaultMime = 'application/octet-stream';
 
 // MIME type aliases for different extensions.
@@ -79,22 +90,15 @@ mime.tif = mime.tiff;
 mime.xht = mime.xhtml;
 
 // Use port 8000 if the port was omitted.
-if (!port) {
-  port = 8000;
-}
+if (!port) port = 8080;
 
 // Use the current directory if the root directory was omitted.
-if (!root || (tmpRoot = Math.ceil(root)) > -1) {
-  // Port number specified.
-  port = tmpRoot || port;
-  root = process.cwd();
-}
+if (!root || (port = Math.ceil(root)) > -1) root = process.cwd();
 
 // Create a new simple HTTP server.
 createServer(function(req, res) {
   // Resolve the path to the requested file or folder.
-  var pathname = parse(decodeURIComponent(req.url)).pathname,
-  file = path.join(root, pathname);
+  var pathname = parse(decodeURIComponent(req.url)).pathname, file = path.join(root, pathname);
   path.exists(file, function(exists) {
     if (!exists) {
       res.writeHead(200, {'Content-Type': 'text/plain'});
@@ -115,20 +119,15 @@ createServer(function(req, res) {
               res.write('An internal server error occurred: ' + err);
             } else {
               // Set the correct MIME type using the extension.
-              res.writeHead(200, {'Content-Type': mime[
-                // Unrecognized extension; use the default MIME type.
-                path.extname(file).slice(1)] || defaultMime});
+              res.writeHead(200, {'Content-Type': mime[path.extname(file).slice(1)] || defaultMime});
               res.write(contents, 'binary');
             }
             // Close the connection.
             res.end();
           });
         } else {
-          // Serve directories.
-          if (pathname.charAt(pathname.length - 1) !== '/') {
-            // Automatically append a trailing slash for directories.
-            pathname += '/';
-          }
+          // Automatically append a trailing slash for directories.
+          if (pathname.charAt(pathname.length - 1) != '/') pathname += '/';
           fs.readdir(file, function(err, files) {
             if (err) {
               res.writeHeader(500, {'Content-Type': 'text/plain'});
@@ -137,14 +136,15 @@ createServer(function(req, res) {
               // Create a basic directory listing.
               files = files.map(function(name) {
                 // URL-encode the path to each file or directory.
-                return '<a href="' + encodeURI(pathname + name) +
-                  '">' + name + '</a>';
+                return '<a href="' + (pathname + name).replace(escapable, function(match) {
+                  // Cache escape sequences not already in the escapes hash.
+                  return escapes[match] || (escapes[match] = '%' + match.charCodeAt(0).toString(16));
+                }) + '">' + name + '</a>';
               });
-              
+              // Add a link to the root directory.
               if (pathname != '/') files.unshift('<a href="..">..</a>');
-              
               res.writeHead(200, {'Content-Type': 'text/html'});
-              res.write('<!DOCTYPE html><meta charset="utf-8"><title>[dir] ' + file + '</title><ul><li>' + files.join('<li>') + '</ul>');
+              res.write('<!DOCTYPE html><meta charset=utf-8><title>[dir] ' + file + '</title><ul><li>' + files.join('<li>') + '</ul>');
             }
             res.end();
           });
