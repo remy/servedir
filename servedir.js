@@ -108,7 +108,7 @@ createServer(function(req, res) {
   var pathname = parse(decodeURIComponent(req.url)).pathname, file = path.join(root, pathname);
   path.exists(file, function(exists) {
     if (!exists) {
-      res.writeHead(200, {'Content-Type': 'text/plain'});
+      res.writeHead(404, {'Content-Type': 'text/plain'});
       res.end('The file ' + file + ' was not found.');
     } else {
       // Serve files and directories.
