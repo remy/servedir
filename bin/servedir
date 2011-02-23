@@ -1,0 +1,33 @@
+#!/usr/bin/env node
+
+var path = require('path'), fs = require('fs');
+
+fs.realpath(__filename, function(error, script) {
+  var servedir, root, port;
+  if (error) throw error;
+
+  // Load `servedir`.
+  servedir = require(path.join(path.dirname(script), '../lib/servedir'));
+
+  // Configure the root directory and port.
+  root = process.argv[2];
+  port = process.argv[3];
+
+  if (!port) {
+    // Port specified as the first argument; root directory omitted.
+    if ((port = Math.ceil(root)) > -1) {
+      root = null;
+    } else {
+      // Use the default port if the port was omitted.
+      port = servedir.defaultPort;
+    }
+  }
+
+  // Use the default directory if the root directory was omitted.
+  if (!root) root = '.';
+
+  // Create a new server.
+  servedir(root, port);
+
+  console.log('Serving %s on port %d...', root, port);
+});
