@@ -13,7 +13,8 @@ Check out a working copy of the source code with [Git](http://git-scm.com), or i
 
 Alternatively, `servedir` can be run directly from the repository using Node:
 
-    $ node servedir.js
+    $ node bin/servedir
+    $ ./bin/servedir
 
 ## Usage
 
