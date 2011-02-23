@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /*!
  * servedir HTTP Server
  * http://github.com/rem/servedir
