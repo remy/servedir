@@ -1,17 +1,17 @@
 {
   "name": "servedir",
-  "version": "0.1.5",
+  "version": "0.1.9",
   "description": "Creates a simple web server for a directory",
-  "homepage": "https://github.com/remy/servedir",
+  "homepage": "http://github.com/remy/servedir",
   "main": "./lib/servedir",
   "keywords": ["development", "web", "server", "terminal"],
   "author": {
     "name": "Remy Sharp",
-    "web": "https://github.com/remy"
+    "web": "http://github.com/remy"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/remy/servedir.git"
+    "url": "git://github.com/remy/servedir.git"
   },
   "bin": {
     "servedir": "./bin/servedir"
