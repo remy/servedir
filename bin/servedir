@@ -2,9 +2,30 @@
 
 var path = require('path'), fs = require('fs');
 
+function controlArg(args, label, fn) {
+  var i;
+  
+  var callback = function (arg, i) {
+    args.splice(i, 1);
+    fn(arg, i);
+  };
+
+  if ((i = args.indexOf(label)) !== -1) {
+    callback(args[i], i);
+  } else if ((i = args.indexOf('-' + label.substr(0, 1))) !== -1) {
+    callback(args[i], i);
+  } else if ((i = args.indexOf('--' + label)) !== -1) {
+    callback(args[i], i);
+  }
+}
+
 fs.realpath(__filename, function(error, script) {
-  var servedir, root, port;
+  var servedir, root, port, options = {};
   if (error) throw error;
+
+  controlArg(process.argv, 'quiet', function () {
+    options.quiet = true;
+  });
 
   // Load `servedir`.
   servedir = require(path.join(path.dirname(script), '../lib/servedir'));
@@ -27,7 +48,7 @@ fs.realpath(__filename, function(error, script) {
   if (!root) root = '.';
 
   // Create a new server.
-  servedir(root, port);
+  servedir(root, port, options);
 
   console.log('Serving %s on port %d...', root, port);
 });
