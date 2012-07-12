@@ -34,5 +34,5 @@ Alternatively, `servedir` can be run directly from the repository using Node:
 
 * [Remy Sharp](http://remysharp.com/) (author)
 * [Graham Ballantyne](http://grahamballantyne.com/)
-* [Kit Goncharov](http://kitgoncharov.github.com/)
+* [Kit Cambridge](http://kitcambridge.github.com/)
 * [Mathias Bynens](http://mathiasbynens.be/)
