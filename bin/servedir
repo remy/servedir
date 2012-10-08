@@ -34,21 +34,39 @@ fs.realpath(__filename, function(error, script) {
   root = process.argv[2];
   port = process.argv[3];
 
+  // Use the default directory if the root directory was omitted.
+  if (!root) root = '.';
+
+  var run = function () {
+    // Create a new server.
+    servedir(root, port, options);
+    console.log('Serving %s on http://localhost:%d', path.resolve(root) + '/', port);
+  }
+
   if (!port) {
     // Port specified as the first argument; root directory omitted.
     if ((port = Math.ceil(root)) > -1) {
       root = null;
     } else {
       // Use the default port if the port was omitted.
-      port = servedir.defaultPort;
+      var http = require('http'),
+          parse = require('url').parse,
+          testPort = servedir.defaultPort;
+      // try to check if anything is running on the default port, and increment until it's free
+      var next = function () {
+        http.get(parse('http://localhost:' + testPort + '/'), function (req) {
+          req.on('end', function () {
+            testPort++;
+            next();
+          });
+        }).on('error', function () {
+          port = testPort;
+          run();
+        });
+      }
+
+      next();
     }
   }
 
-  // Use the default directory if the root directory was omitted.
-  if (!root) root = '.';
-
-  // Create a new server.
-  servedir(root, port, options);
-
-  console.log('Serving %s on port %d...', root, port);
 });
