@@ -54,11 +54,10 @@ fs.realpath(__filename, function(error, script) {
           testPort = servedir.defaultPort;
       // try to check if anything is running on the default port, and increment until it's free
       var next = function () {
-        http.get(parse('http://localhost:' + testPort + '/'), function (req) {
-          req.on('end', function () {
-            testPort++;
-            next();
-          });
+        var request = http.get(parse('http://localhost:' + testPort + '/'), function (res) {
+          res.destroy();
+          testPort++;
+          next();
         }).on('error', function () {
           port = testPort;
           run();
