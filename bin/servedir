@@ -49,23 +49,22 @@ fs.realpath(__filename, function(error, script) {
       root = null;
     } else {
       // Use the default port if the port was omitted.
-      var http = require('http'),
-          parse = require('url').parse,
-          testPort = servedir.defaultPort;
-      // try to check if anything is running on the default port, and increment until it's free
-      var next = function () {
-        var request = http.get(parse('http://localhost:' + testPort + '/'), function (res) {
-          res.destroy();
-          testPort++;
-          next();
-        }).on('error', function () {
-          port = testPort;
-          run();
-        });
-      }
-
-      next();
+      port = servedir.defaultPort;
     }
   }
 
+  var http = require('http'),
+      testPort = +port;
+
+  // try to check if anything is running on the default port, and increment until it's free
+  (function next() {
+    http.get({ port: testPort }, function (res) {
+      res.destroy();
+      testPort++;
+      next();
+    }).on('error', function () {
+      port = testPort;
+      run();
+    });
+  }());
 });
