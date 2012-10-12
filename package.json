@@ -1,6 +1,6 @@
 {
   "name": "servedir",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Creates a simple web server for a directory",
   "homepage": "http://github.com/remy/servedir",
   "main": "./lib/servedir",
