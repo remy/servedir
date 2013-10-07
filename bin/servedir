@@ -27,6 +27,10 @@ fs.realpath(__filename, function(error, script) {
     options.quiet = true;
   });
 
+  controlArg(process.argv, 'external', function () {
+    options.allowExternalAccess = true;
+  });
+
   // Load `servedir`.
   servedir = require(path.join(path.dirname(script), '../lib/servedir'));
 
