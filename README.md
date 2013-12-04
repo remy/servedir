@@ -8,7 +8,7 @@ The annotated source code is included in the `docs/` folder.
 
 Check out a working copy of the source code with [Git](http://git-scm.com), or install `servedir` via [npm](http://npmjs.org). The latter will also install `servedir` into the system's `bin` path.
 
-    $ git clone git://github.com/rem/servedir.git
+    $ git clone git://github.com/remy/servedir.git
     $ npm install servedir -g
 
 Alternatively, `servedir` can be run directly from the repository using Node:
