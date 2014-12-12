@@ -11,11 +11,6 @@ Check out a working copy of the source code with [Git](http://git-scm.com), or i
     $ git clone git://github.com/remy/servedir.git
     $ npm install servedir -g
 
-Alternatively, `servedir` can be run directly from the repository using Node:
-
-    $ node bin/servedir
-    $ ./bin/servedir
-
 ## Usage
 
 `servedir [path] [port]`
@@ -23,12 +18,37 @@ Alternatively, `servedir` can be run directly from the repository using Node:
 * `path` - The location to serve files and directories from. Defaults to the current working directory.
 * `port` - The port number. Default to 8000.
 
-### Example
+If no port is given, it'll try to find the next free port from 8000 upwards.
 
-    $ servedir ~/Documents/example 8001
-    $ servedir ~/Documents/example
-    $ servedir 8001
+## Mocked router
+
+To create a mock router, create a `routes.json` file in the current working directory, and `servedir` will respond with your data.
+
+For example:
+
+```json
+{
+  "GET /foo/:id": {
+    "id": "{{id}}",
+    "title": "Awesome stuff"
+  },
+  "POST /ok": {
+    "success": true
+  },
+  "POST /fail": {
+    "success": true
+  }
+}
+```
+
+Now requests to those URLs will respond with JSON for the mocked endpoints.
+
+## Example
+
     $ servedir
+    $ servedir 8001
+    $ servedir ~/Documents/example
+    $ servedir ~/Documents/example 8001
 
 ## Contributors
 

@@ -4,7 +4,7 @@ var path = require('path'), fs = require('fs');
 
 function controlArg(args, label, fn) {
   var i;
-  
+
   var callback = function (arg, i) {
     args.splice(i, 1);
     fn(arg, i);
@@ -44,7 +44,7 @@ fs.realpath(__filename, function(error, script) {
   var run = function () {
     // Create a new server.
     servedir(root, port, options);
-    console.log('Serving %s on http://localhost:%d', path.resolve(root) + '/', port);
+    console.log('servedir v%s - %s on http://localhost:%d', servedir.version, path.resolve(root) + '/', port);
   }
 
   if (!port) {
